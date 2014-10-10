@@ -14,7 +14,7 @@ def formatLog(source="", level="", title="", data={}):
   :param title - brief description - what kind of event happened?
   :param data - additional information - what details help to investigate?
   """
-  # consistently output empty string for unset keys, because null values differ by language
+  # consistently output empty string for unset params, because null values differ by language
   source = "" if source is None else source
   level = "" if level is None else level
   title = "" if title is None else title
