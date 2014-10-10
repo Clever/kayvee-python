@@ -1,6 +1,13 @@
 {
-  "version": "0.0.1",
+  "version": "0.0.3",
   "format": [
+    {
+      "title": "allows empty data",
+      "input": {
+        "data" : {}
+      },
+      "output": ""
+    },
     {
       "title": "maps one data field",
       "input": {
@@ -36,10 +43,28 @@
       "title": "allows spaces",
       "input": {
         "data" : {
-          "spaces": " set' c"
+          "spaces": " set c"
         }
       },
-      "output": "spaces=\" set' c\""
+      "output": "spaces=\" set c\""
+    },
+    {
+      "title": "allows single-quote",
+      "input": {
+        "data" : {
+          "singlequote": "'"
+        }
+      },
+      "output": "singlequote=\"'\""
+    },
+    {
+      "title": "allows double-quote",
+      "input": {
+        "data" : {
+          "doublequote": "\""
+        }
+      },
+      "output": "doublequote=\"\\\"\""
     }
   ],
   "formatLog": [
