@@ -1,6 +1,6 @@
 image: python2.7
 script:
-  - python setup.py develop && python setup.py test
+  - make test
 notify:
   email:
     recipients:
