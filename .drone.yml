@@ -1,0 +1,7 @@
+image: python2.7
+script:
+  - make test
+notify:
+  email:
+    recipients:
+      - drone@clever.com
