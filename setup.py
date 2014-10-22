@@ -4,11 +4,8 @@ import os
 import sys
 from setuptools import setup, find_packages
 from pip.req import parse_requirements
-
+import version
 import pkg_resources
-
-version_file = pkg_resources.resource_stream(__name__, "kayvee/VERSION")
-VERSION = version_file.readline().strip()
 
 here = os.path.abspath(os.path.dirname(__file__))
 try:
@@ -24,7 +21,7 @@ reqs = './requirements.txt' if not sys.argv[1] in ['develop', 'test'] else './re
 install_reqs = parse_requirements(os.path.join(here, reqs))
 
 setup(name='kayvee',
-      version=VERSION,
+      version=version.VERSION,
       description='Write data to key=val pairs, for human and machine readability',
       author='Clever',
       author_email='tech-notify@getclever.com',
