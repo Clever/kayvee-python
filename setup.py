@@ -17,7 +17,10 @@ except:
   README = ''
   CHANGES = ''
 
-reqs = './requirements.txt' if not sys.argv[1] in ['develop', 'test'] else './requirements-dev.txt'
+reqs = './requirements.txt'
+if len(sys.argv) > 1 and sys.argv[1] in ['develop', 'test']:
+  reqs = './requirements-dev.txt'
+
 install_reqs = parse_requirements(os.path.join(here, reqs))
 
 setup(name='kayvee',

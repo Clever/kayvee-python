@@ -12,3 +12,9 @@ format: deps
 
 test: deps
 	nosetests test
+
+build:
+	python setup.py sdist
+
+publish:
+	./publish.sh
