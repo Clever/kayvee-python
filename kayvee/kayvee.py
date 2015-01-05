@@ -2,9 +2,7 @@ import json
 
 def format(data):
   """ Converts a dict to a string of space-delimited key=val pairs """
-  val_formatter = lambda v: json.dumps(v, separators=(',', ':'))
-  pairs = map(lambda key: "{key}={val}".format(key=key, val=val_formatter(data[key])), data.keys())
-  return " ".join(sorted(pairs))
+  return json.dumps(data, separators=(',', ':'))
 
 def formatLog(source="", level="", title="", data={}):
   """ Similar to format, but takes additional reserved params to promote logging best-practices
@@ -18,16 +16,14 @@ def formatLog(source="", level="", title="", data={}):
   source = "" if source is None else source
   level = "" if level is None else level
   title = "" if title is None else title
+  
+  if not type(data) is dict:
+    data = {}
+  data['source'] = source
+  data['level'] = level
+  data['title'] = title
 
-  reserved = "{} {} {}".format(
-    format({"source": source}),
-    format({"level": level}),
-    format({"title": title})
-  )
-  if type(data) is dict and len(data.keys()) > 0:
-    return "{} {}".format(reserved, format(data))
-  else:
-    return reserved
+  return format(data)
 
 # Log Levels
 UNKNOWN = "unknown"

@@ -10,7 +10,7 @@ lint: deps
 format: deps
 	autopep8 -i -r -j0 -a --experimental --max-line-length 100 --indent-size 2 .
 
-test: deps
+test: deps tests.json
 	nosetests test
 
 build:
@@ -18,3 +18,6 @@ build:
 
 publish:
 	./publish.sh
+
+tests.json:
+	wget https://raw.githubusercontent.com/Clever/kayvee/master/tests.json -O test/tests.json
