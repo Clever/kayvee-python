@@ -4,6 +4,7 @@ import os
 import sys
 from setuptools import setup, find_packages
 from pip.req import parse_requirements
+from pip.download import PipSession
 import version
 import pkg_resources
 
@@ -21,7 +22,7 @@ reqs = './requirements.txt'
 if len(sys.argv) > 1 and sys.argv[1] in ['develop', 'test']:
   reqs = './requirements-dev.txt'
 
-install_reqs = parse_requirements(os.path.join(here, reqs))
+install_reqs = parse_requirements(os.path.join(here, reqs), session=PipSession()),
 
 setup(name='kayvee',
       version=version.VERSION,
