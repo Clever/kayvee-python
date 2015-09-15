@@ -19,7 +19,7 @@ LOG_LEVEL_ENUM = {
   "critical": 4,
 }
 
-# This is a port from kayvee-go/c-log/clog.go
+# This is a port from kayvee-go/logger/logger.go
 class Logger:
   def __init__(self, source, logLvl=None, formatter=kv.format, output=sys.stderr):
     if not logLvl:
