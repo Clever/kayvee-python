@@ -32,23 +32,26 @@ class TestLogger(unittest.TestCase):
     self.assertEqual(outputIO.getvalue(), expected)
     outputIO.close()
 
-  def test_validateLog(self):
+  def test_validateLogLvl(self):
     # Explicit validation checks
     logObj = logger.Logger("logger-tester")
     outputIO = StringIO.StringIO()
     logObj.setOutput(outputIO)
 
+    # Test case-insensitive in log level name
     logLvl = logObj._validateLogLvl("debug")
     self.assertEqual(logLvl, logger.LOG_LEVELS["Debug"])
-
     logLvl = logObj._validateLogLvl("Debug")
     self.assertEqual(logLvl, logger.LOG_LEVELS["Debug"])
 
+    # Test non-default log levels
     logLvl = logObj._validateLogLvl("info")
     self.assertEqual(logLvl, logger.LOG_LEVELS["Info"])
-    logLvl = logObj._validateLogLvl("Info")
-    self.assertEqual(logLvl, logger.LOG_LEVELS["Info"])
+    logLvl = logObj._validateLogLvl("critical")
+    self.assertEqual(logLvl, logger.LOG_LEVELS["Critical"])
+    # TODO: add for each possible level
 
+    # Test sets level to debug if given invalid log level
     logLvl = logObj._validateLogLvl("sometest")
     self.assertEqual(logLvl, logger.LOG_LEVELS["Debug"])
     outputIO.close()
@@ -59,7 +62,7 @@ class TestLogger(unittest.TestCase):
     outputIO = StringIO.StringIO()
     logObj.setOutput(outputIO)
 
-    logObj.setLogLevel("debu")
+    logObj.setLogLevel("invalidloglvl")
     logObj.debug("testlogdebug")
     expected = "{\"source\": \"logger-tester\", \"level\": \"" + logger.LOG_LEVELS["Debug"] + "\", \"title\": \"testlogdebug\"}"
     self.assertEqualJson(outputIO.getvalue(), expected)
@@ -73,99 +76,35 @@ class TestLogger(unittest.TestCase):
     self.assertEqualJson(outputIO.getvalue(), expected)
     outputIO.close()
 
-  def test_debug(self):
+  def test_logFuncs(self):
     logObj = logger.Logger("logger-tester")
-    outputIO = StringIO.StringIO()
-    logObj.setOutput(outputIO)
 
-    logObj.debug("testlogdebug")
-    expected = "{\"source\": \"logger-tester\", \"level\": \"" + logger.LOG_LEVELS["Debug"] + "\", \"title\": \"testlogdebug\"}"
-    self.assertEqualJson(outputIO.getvalue(), expected)
-    outputIO.close()
-  def test_debugD(self):
-    logObj = logger.Logger("logger-tester")
-    outputIO = StringIO.StringIO()
-    logObj.setOutput(outputIO)
+    # LOG_LEVEL: (simpleLogFunc, addlDataLogFunc)
+    tests = {
+        logger.LOG_LEVELS["Debug"]: (logObj.debug, logObj.debugD),
+        logger.LOG_LEVELS["Info"]: (logObj.info, logObj.infoD),
+        logger.LOG_LEVELS["Warning"]: (logObj.warn, logObj.warnD),
+        logger.LOG_LEVELS["Error"]: (logObj.error, logObj.errorD),
+        logger.LOG_LEVELS["Critical"]: (logObj.critical, logObj.criticalD)
+    }
 
-    logObj.debugD("testlogdebug", {"key1":"val1","key2":"val2"})
-    expected = "{\"source\": \"logger-tester\", \"level\": \"" + logger.LOG_LEVELS["Debug"] + "\", \"title\": \"testlogdebug\",\"key1\": \"val1\", \"key2\": \"val2\"}"
-    self.assertEqualJson(outputIO.getvalue(), expected)
-    outputIO.close()
+    for logLvl in tests:
+        outputIO = StringIO.StringIO()
+        logObj.setOutput(outputIO)
 
-  def test_info(self):
-    logObj = logger.Logger("logger-tester")
-    outputIO = StringIO.StringIO()
-    logObj.setOutput(outputIO)
+        simpleLogFunc = tests[logLvl][0]
+        simpleLogFunc("testlog"+logLvl)
+        simpleExpected = "{\"source\": \"logger-tester\", \"level\": \"" + logLvl + "\", \"title\": \"testlog" + logLvl + "\"}"
+        self.assertEqualJson(outputIO.getvalue(), simpleExpected)
 
-    logObj.info("testloginfo")
-    expected = "{\"source\": \"logger-tester\", \"level\": \"" + logger.LOG_LEVELS["Info"] + "\", \"title\": \"testloginfo\"}"
-    self.assertEqualJson(outputIO.getvalue(), expected)
-    outputIO.close()
-  def test_infoD(self):
-    logObj = logger.Logger("logger-tester")
-    outputIO = StringIO.StringIO()
-    logObj.setOutput(outputIO)
+        outputIO = StringIO.StringIO()
+        logObj.setOutput(outputIO)
 
-    logObj.infoD("testloginfo", {"key1":"val1","key2":"val2"})
-    expected = "{\"source\": \"logger-tester\", \"level\": \"" + logger.LOG_LEVELS["Info"] + "\", \"title\": \"testloginfo\",\"key1\": \"val1\", \"key2\": \"val2\"}"
-    self.assertEqualJson(outputIO.getvalue(), expected)
-    outputIO.close()
+        addlDataLogFunc = tests[logLvl][1]
+        addlDataLogFunc("testlog"+logLvl, {"key1":"val1","key2":"val2"})
+        addlDataExpected = "{\"source\": \"logger-tester\", \"level\": \"" + logLvl + "\", \"title\": \"testlog" + logLvl + "\",\"key1\": \"val1\", \"key2\": \"val2\"}"
+        self.assertEqualJson(outputIO.getvalue(), addlDataExpected)
 
-  def test_warn(self):
-    logObj = logger.Logger("logger-tester")
-    outputIO = StringIO.StringIO()
-    logObj.setOutput(outputIO)
-
-    logObj.warn("testlogwarning")
-    expected = "{\"source\": \"logger-tester\", \"level\": \"" + logger.LOG_LEVELS["Warning"] + "\", \"title\": \"testlogwarning\"}"
-    self.assertEqualJson(outputIO.getvalue(), expected)
-    outputIO.close()
-  def test_warnD(self):
-    logObj = logger.Logger("logger-tester")
-    outputIO = StringIO.StringIO()
-    logObj.setOutput(outputIO)
-
-    logObj.warnD("testlogwarning", {"key1":"val1","key2":"val2"})
-    expected = "{\"source\": \"logger-tester\", \"level\": \"" + logger.LOG_LEVELS["Warning"] + "\", \"title\": \"testlogwarning\",\"key1\": \"val1\", \"key2\": \"val2\"}"
-    self.assertEqualJson(outputIO.getvalue(), expected)
-    outputIO.close()
-
-  def test_error(self):
-    logObj = logger.Logger("logger-tester")
-    outputIO = StringIO.StringIO()
-    logObj.setOutput(outputIO)
-
-    logObj.error("testlogerror")
-    expected = "{\"source\": \"logger-tester\", \"level\": \"" + logger.LOG_LEVELS["Error"] + "\", \"title\": \"testlogerror\"}"
-    self.assertEqualJson(outputIO.getvalue(), expected)
-    outputIO.close()
-  def test_errorD(self):
-    logObj = logger.Logger("logger-tester")
-    outputIO = StringIO.StringIO()
-    logObj.setOutput(outputIO)
-
-    logObj.errorD("testlogerror", {"key1":"val1","key2":"val2"})
-    expected = "{\"source\": \"logger-tester\", \"level\": \"" + logger.LOG_LEVELS["Error"] + "\", \"title\": \"testlogerror\",\"key1\": \"val1\", \"key2\": \"val2\"}"
-    self.assertEqualJson(outputIO.getvalue(), expected)
-    outputIO.close()
-
-  def test_critical(self):
-    logObj = logger.Logger("logger-tester")
-    outputIO = StringIO.StringIO()
-    logObj.setOutput(outputIO)
-
-    logObj.critical("testlogcritical")
-    expected = "{\"source\": \"logger-tester\", \"level\": \"" + logger.LOG_LEVELS["Critical"] + "\", \"title\": \"testlogcritical\"}"
-    self.assertEqualJson(outputIO.getvalue(), expected)
-    outputIO.close()
-  def test_criticalD(self):
-    logObj = logger.Logger("logger-tester")
-    outputIO = StringIO.StringIO()
-    logObj.setOutput(outputIO)
-
-    logObj.criticalD("testlogcritical", {"key1":"val1","key2":"val2"})
-    expected = "{\"source\": \"logger-tester\", \"level\": \"" + logger.LOG_LEVELS["Critical"] + "\", \"title\": \"testlogcritical\",\"key1\": \"val1\", \"key2\": \"val2\"}"
-    self.assertEqualJson(outputIO.getvalue(), expected)
     outputIO.close()
 
   def test_counter(self):
