@@ -32,28 +32,28 @@ class TestLogger(unittest.TestCase):
     self.assertEqual(outputIO.getvalue(), expected)
     outputIO.close()
 
-  def test_validateLogLvl(self):
+  def test_validateLogLevel(self):
     # Explicit validation checks
     logObj = logger.Logger("logger-tester")
     outputIO = StringIO.StringIO()
     logObj.setOutput(outputIO)
 
     # Test case-insensitive in log level name
-    logLvl = logObj._validateLogLvl("debug")
-    self.assertEqual(logLvl, logger.LOG_LEVELS["Debug"])
-    logLvl = logObj._validateLogLvl("Debug")
-    self.assertEqual(logLvl, logger.LOG_LEVELS["Debug"])
+    log_level = logObj._validateLogLevel("debug")
+    self.assertEqual(log_level, logger.LOG_LEVELS["Debug"])
+    log_level = logObj._validateLogLevel("Debug")
+    self.assertEqual(log_level, logger.LOG_LEVELS["Debug"])
 
     # Test non-default log levels
-    logLvl = logObj._validateLogLvl("info")
-    self.assertEqual(logLvl, logger.LOG_LEVELS["Info"])
-    logLvl = logObj._validateLogLvl("critical")
-    self.assertEqual(logLvl, logger.LOG_LEVELS["Critical"])
+    log_level = logObj._validateLogLevel("info")
+    self.assertEqual(log_level, logger.LOG_LEVELS["Info"])
+    log_level = logObj._validateLogLevel("critical")
+    self.assertEqual(log_level, logger.LOG_LEVELS["Critical"])
     # TODO: add for each possible level
 
     # Test sets level to debug if given invalid log level
-    logLvl = logObj._validateLogLvl("sometest")
-    self.assertEqual(logLvl, logger.LOG_LEVELS["Debug"])
+    log_level = logObj._validateLogLevel("sometest")
+    self.assertEqual(log_level, logger.LOG_LEVELS["Debug"])
     outputIO.close()
 
   def test_invalidLog(self):
@@ -62,7 +62,7 @@ class TestLogger(unittest.TestCase):
     outputIO = StringIO.StringIO()
     logObj.setOutput(outputIO)
 
-    logObj.setLogLevel("invalidloglvl")
+    logObj.setLogLevel("invalidlog_level")
     logObj.debug("testlogdebug")
     expected = "{\"source\": \"logger-tester\", \"level\": \"" + logger.LOG_LEVELS["Debug"] + "\", \"title\": \"testlogdebug\"}"
     self.assertEqualJson(outputIO.getvalue(), expected)
@@ -88,21 +88,21 @@ class TestLogger(unittest.TestCase):
         logger.LOG_LEVELS["Critical"]: (logObj.critical, logObj.criticalD)
     }
 
-    for logLvl in tests:
+    for log_level in tests:
         outputIO = StringIO.StringIO()
         logObj.setOutput(outputIO)
 
-        simpleLogFunc = tests[logLvl][0]
-        simpleLogFunc("testlog"+logLvl)
-        simpleExpected = "{\"source\": \"logger-tester\", \"level\": \"" + logLvl + "\", \"title\": \"testlog" + logLvl + "\"}"
+        simpleLogFunc = tests[log_level][0]
+        simpleLogFunc("testlog"+log_level)
+        simpleExpected = "{\"source\": \"logger-tester\", \"level\": \"" + log_level + "\", \"title\": \"testlog" + log_level + "\"}"
         self.assertEqualJson(outputIO.getvalue(), simpleExpected)
 
         outputIO = StringIO.StringIO()
         logObj.setOutput(outputIO)
 
-        addlDataLogFunc = tests[logLvl][1]
-        addlDataLogFunc("testlog"+logLvl, {"key1":"val1","key2":"val2"})
-        addlDataExpected = "{\"source\": \"logger-tester\", \"level\": \"" + logLvl + "\", \"title\": \"testlog" + logLvl + "\",\"key1\": \"val1\", \"key2\": \"val2\"}"
+        addlDataLogFunc = tests[log_level][1]
+        addlDataLogFunc("testlog"+log_level, {"key1":"val1","key2":"val2"})
+        addlDataExpected = "{\"source\": \"logger-tester\", \"level\": \"" + log_level + "\", \"title\": \"testlog" + log_level + "\",\"key1\": \"val1\", \"key2\": \"val2\"}"
         self.assertEqualJson(outputIO.getvalue(), addlDataExpected)
 
     outputIO.close()

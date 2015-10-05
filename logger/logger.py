@@ -21,32 +21,32 @@ LOG_LEVEL_ENUM = {
 
 # This is a port from kayvee-go/logger/logger.go
 class Logger:
-  def __init__(self, source, logLvl=None, formatter=kv.format, output=sys.stderr):
-    if not logLvl:
-      logLvl = os.environ.get('KAYVEE_LOG_LEVEL')
-    self.logLvl = self._validateLogLvl(logLvl)
+  def __init__(self, source, log_level=None, formatter=kv.format, output=sys.stderr):
+    if not log_level:
+      log_level = os.environ.get('KAYVEE_LOG_LEVEL')
+    self.log_level = self._validateLogLevel(log_level)
     self.globals = {}
     self.globals["source"] = source
     self.formatter = formatter
     self.output = output
 
-  def setConfig(self, source, logLvl, formatter, output):
+  def setConfig(self, source, log_level, formatter, output):
     self.globals["source"] = source
-    self.logLvl = self._validateLogLvl(logLvl)
+    self.log_level = self._validateLogLevel(log_level)
     self.formatter = formatter
     self.output = output
 
-  def _validateLogLvl(self, logLvl):
-    if not logLvl:
+  def _validateLogLevel(self, log_level):
+    if not log_level:
       return LOG_LEVELS["Debug"]
     else:
       for key, value in LOG_LEVELS.iteritems():
-        if logLvl.lower() == value:
+        if log_level.lower() == value:
           return value
     return LOG_LEVELS["Debug"]
 
-  def setLogLevel(self, logLvl):
-    self.logLvl = self._validateLogLvl(logLvl)
+  def setLogLevel(self, log_level):
+    self.log_level = self._validateLogLevel(log_level)
 
   def setFormatter(self, formatter):
     self.formatter = formatter
@@ -107,10 +107,10 @@ class Logger:
     data["type"] = "gauge"
     self.logWithLevel(LOG_LEVELS["Info"], data)
 
-  def logWithLevel(self, logLvl, data):
-    if LOG_LEVEL_ENUM[logLvl] < LOG_LEVEL_ENUM[self.logLvl]:
+  def logWithLevel(self, log_level, data):
+    if LOG_LEVEL_ENUM[log_level] < LOG_LEVEL_ENUM[self.log_level]:
       return
-    data["level"] = logLvl
+    data["level"] = log_level
     for key,value in self.globals.iteritems():
       if key in data:
         continue
