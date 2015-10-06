@@ -25,13 +25,13 @@ class Logger:
     if not log_level:
       log_level = os.environ.get('KAYVEE_LOG_LEVEL')
     self.log_level = self._validateLogLevel(log_level)
-    self.globals = {}
-    self.globals["source"] = source
+    self.default_fields = {}
+    self.default_fields["source"] = source
     self.formatter = formatter
     self.output = output
 
   def setConfig(self, source, log_level, formatter, output):
-    self.globals["source"] = source
+    self.default_fields["source"] = source
     self.log_level = self._validateLogLevel(log_level)
     self.formatter = formatter
     self.output = output
@@ -54,54 +54,40 @@ class Logger:
   def setOutput(self, output):
     self.output = output
 
-  def debug(self, title):
-    self.debugD(title, {})
-
-  def info(self, title):
-    self.infoD(title, {})
-
-  def warn(self, title):
-    self.warnD(title, {})
-
-  def error(self, title):
-    self.errorD(title, {})
-
-  def critical(self, title):
-    self.criticalD(title, {})
-
-  def counter(self, title):
-    self.counterD(title, 1, {})
-
-  def gauge(self, title, value):
-    self.gaugeD(title, value, {})
-
-  def debugD(self, title, data):
+  def debug(self, title, data=None):
+    data = data if data else {}
     data["title"] = title
     self.logWithLevel(LOG_LEVELS["Debug"], data)
 
-  def infoD(self, title, data):
+  def info(self, title, data=None):
+    data = data if data else {}
     data["title"] = title
     self.logWithLevel(LOG_LEVELS["Info"], data)
 
-  def warnD(self, title, data):
+  def warn(self, title, data=None):
+    data = data if data else {}
     data["title"] = title
     self.logWithLevel(LOG_LEVELS["Warning"], data)
 
-  def errorD(self, title, data):
+  def error(self, title, data=None):
+    data = data if data else {}
     data["title"] = title
     self.logWithLevel(LOG_LEVELS["Error"], data)
 
-  def criticalD(self, title, data):
+  def critical(self, title, data=None):
+    data = data if data else {}
     data["title"] = title
     self.logWithLevel(LOG_LEVELS["Critical"], data)
 
-  def counterD(self, title, value, data):
+  def counter(self, title, value=1, data=None):
+    data = data if data else {}
     data["title"] = title
     data["value"] = value
     data["type"] = "counter"
     self.logWithLevel(LOG_LEVELS["Info"], data)
 
-  def gaugeD(self, title, value, data):
+  def gauge(self, title, value, data=None):
+    data = data if data else {}
     data["title"] = title
     data["value"] = value
     data["type"] = "gauge"
@@ -111,9 +97,9 @@ class Logger:
     if LOG_LEVEL_ENUM[log_level] < LOG_LEVEL_ENUM[self.log_level]:
       return
     data["level"] = log_level
-    for key,value in self.globals.iteritems():
+    for key,value in self.default_fields.iteritems():
       if key in data:
         continue
       data[key] = value
     logString = self.formatter(data)
-    print(logString, file=self.output)
+    self.output.write(logString + "\n")
