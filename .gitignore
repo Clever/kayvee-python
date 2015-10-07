@@ -1,5 +1,5 @@
 # repo specific
-tests/tests.json   # downloaded during test run
+test/tests.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
