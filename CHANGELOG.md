@@ -1,3 +1,5 @@
+## 2.0.1 (2016-01-21)
+  * Allow pip installing for all Pip versions. Avoid `parse_requirements` error.
 ## 2.0.0 (2015-10-06)
   * add kayvee.logger support for direct logging; metrics support
 ## 1.0.1 (2014-01-05)
