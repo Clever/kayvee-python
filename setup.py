@@ -21,7 +21,11 @@ reqs = './requirements.txt'
 if len(sys.argv) > 1 and sys.argv[1] in ['develop', 'test']:
   reqs = './requirements-dev.txt'
 
-install_reqs = parse_requirements(os.path.join(here, reqs), session=False)
+pr_kwargs = {}
+if pkg_resources.get_distribution("pip").version >= '6.0':
+  pr_kwargs = {"session": False}
+
+install_reqs = parse_requirements(os.path.join(here, reqs), **pr_kwargs)
 
 setup(name='kayvee',
       version=version.VERSION,
