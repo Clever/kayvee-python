@@ -20,15 +20,15 @@ class TestLogger(unittest.TestCase):
     self.assertNotEqual(actual, expected)
 
   def test_logger_contruct(self):
-    formatter = lambda data: data["level"] + "." + data["source"] + "." + data["title"]
+    formatter = lambda data: ".".join(data.values())
     outputIO = StringIO.StringIO()
-    logObj = logger.Logger("logger-constructor", logger.LOG_LEVELS["Info"], formatter, outputIO)
+    logObj = logger.Logger("logger-constructor", logger.LOG_LEVELS["Info"], formatter, outputIO, dict(default_field="someval"))
     logObj.debug("testlogdebug")
     expected = ""
     self.assertEqual(outputIO.getvalue(), expected)
 
     logObj.info("testloginfo")
-    expected = logger.LOG_LEVELS["Info"] + ".logger-constructor.testloginfo\n"
+    expected = "logger-constructor.info.someval.testloginfo\n"
     self.assertEqual(outputIO.getvalue(), expected)
     outputIO.close()
 
