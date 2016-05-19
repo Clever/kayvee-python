@@ -24,6 +24,10 @@ import kayvee.logger
 
 log = logger.Logger("logger-test")
 log.info("information-log-title", dict(id=name_id, context=context_str)
+
+# Pass global variables:
+log = logger.Logger("logger-test", default_fields=dict("query"=query))
+log.info("msg-title")
 ```
 
 Other functions supported for structured logging:
