@@ -1,6 +1,6 @@
 import unittest
 import kayvee as kv
-import logger
+import kayvee.logger as logger
 import json
 import os
 import StringIO

@@ -20,7 +20,7 @@ print(kv.format(source="logger-test",
 ### kayvee.logger
 
 ```python
-import kayvee.logger
+import kayvee.logger as logger
 
 log = logger.Logger("logger-test")
 log.info("information-log-title", dict(id=name_id, context=context_str)
