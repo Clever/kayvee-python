@@ -1,3 +1,5 @@
+## 2.0.2 (2016-05-20)
+  * Fix broken Logger. Add `default_fields` support to logger.
 ## 2.0.1 (2016-01-21)
   * Allow pip installing for all Pip versions. Avoid `parse_requirements` error.
 ## 2.0.0 (2015-10-06)
