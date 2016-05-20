@@ -42,3 +42,16 @@ Supported metrics:
 
 * `Logger.counter`
 * `Logger.gauge`
+
+## Releasing a new version
+
+When you merge changes for a new version:
+
+- bump the `VERSION`
+- update `CHANGELOG.md` explaining the changes
+- after merging, run `publish.sh`
+    - creates a git tag associating the version with the commit
+    - publishes the versioned package to pypi (Python package store;
+        this requires that you have the correct permissions to publish)
+
+If you have any issues, please work with `#oncall-infra`.
