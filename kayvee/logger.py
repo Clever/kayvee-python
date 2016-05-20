@@ -21,11 +21,14 @@ LOG_LEVEL_ENUM = {
 
 # This is a port from kayvee-go/logger/logger.go
 class Logger:
-  def __init__(self, source, log_level=None, formatter=kv.format, output=sys.stderr):
+  def __init__(self, source, log_level=None, formatter=kv.format, output=sys.stderr, default_fields=None):
     if not log_level:
       log_level = os.environ.get('KAYVEE_LOG_LEVEL')
     self.log_level = self._validateLogLevel(log_level)
     self.default_fields = {}
+    if default_fields is not None:
+        for key, value in default_fields.iteritems():
+            self.default_fields[key] = default_fields[key]
     self.default_fields["source"] = source
     self.formatter = formatter
     self.output = output
