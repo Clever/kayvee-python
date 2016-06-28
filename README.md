@@ -23,7 +23,7 @@ print(kv.format(source="logger-test",
 import kayvee.logger as logger
 
 log = logger.Logger("logger-test")
-log.info("information-log-title", dict(id=name_id, context=context_str)
+log.info("information-log-title", dict(id=name_id, context=context_str))
 
 # Pass global variables:
 log = logger.Logger("logger-test", default_fields=dict("query"=query))
