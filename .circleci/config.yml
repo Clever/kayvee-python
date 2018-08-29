@@ -16,8 +16,8 @@ jobs:
     - run:
         command: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
         name: Set up CircleCI artifacts directories
-    - run: pip install -U pip
-    - run: make test
+    - run: sudo pip install --upgrade pip==9.0.3
+    - run: sudo make test
     - run: $HOME/ci-scripts/circleci/report-card $RC_DOCKER_USER $RC_DOCKER_PASS "$RC_DOCKER_EMAIL" $RC_GITHUB_TOKEN
     - run:
         command: |-
