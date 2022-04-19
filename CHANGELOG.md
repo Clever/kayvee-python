@@ -1,3 +1,5 @@
+## 3.0.0 (2022-04-18)
+  * Upgrade to python 3.9.12
 ## 2.0.2 (2016-05-20)
   * Fix broken Logger. Add `default_fields` support to logger.
 ## 2.0.1 (2016-01-21)

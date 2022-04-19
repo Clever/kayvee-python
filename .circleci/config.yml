@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/Clever/kayvee-python
     docker:
-    - image: circleci/python:2.7.15
+    - image: circleci/python:3.9.12
     environment:
       CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
@@ -16,5 +16,5 @@ jobs:
     - run:
         command: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
         name: Set up CircleCI artifacts directories
-    - run: sudo pip install --upgrade pip==9.0.3
+    - run: sudo pip install --upgrade pip==22.0.4
     - run: sudo make test
