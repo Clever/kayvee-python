@@ -1,3 +1,4 @@
+from __future__ import print_function
 import unittest
 import kayvee as kv
 import json
@@ -17,14 +18,14 @@ class TestKayvee(unittest.TestCase):
 
   def test_format(self):
     for test in tests['format']:
-      print "TEST: {}".format(test['title'])
+      print("TEST: {}".format(test['title']))
       actual = kv.format(test['input']['data'])
       expected = test['output']
       self.assertEqualJson(actual, expected)
 
   def test_formatLog(self):
     for test in tests['formatLog']:
-      print "TEST: {}".format(test['title'])
+      print("TEST: {}".format(test['title']))
       actual = kv.formatLog(
         test['input'].get('source', None),
         test['input'].get('level', None),
