@@ -2,7 +2,7 @@ SHELL := /bin/bash
 .PHONY: test deps lint format
 
 deps:
-	python setup.py develop
+	python3 setup.py develop
 
 lint: deps
 	pep8 --config ./pep8 . || true
@@ -14,7 +14,7 @@ test: deps tests.json
 	nosetests test
 
 build:
-	python setup.py sdist
+	python3 setup.py sdist
 
 publish:
 	./publish.sh

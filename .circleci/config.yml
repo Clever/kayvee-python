@@ -16,5 +16,5 @@ jobs:
     - run:
         command: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
         name: Set up CircleCI artifacts directories
-    - run: sudo pip install --upgrade pip==22.0.4
-    - run: sudo make test
+    - run: pip3 install --upgrade pip==22.0.4
+    - run: make test
