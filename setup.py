@@ -4,18 +4,14 @@ from builtins import str
 import os
 import sys
 from setuptools import setup, find_packages
-try: # for pip >= 10
-    from pip._internal.req import parse_requirements
-except ImportError: # for pip <= 9.0.3
-    from pip.req import parse_requirements
+from pip._internal.req import parse_requirements
 import version
-import pkg_resources
 
 here = os.path.abspath(os.path.dirname(__file__))
 try:
-  with open(os.path.join(here, '../README.md')) as f:
+  with open(os.path.join(here, 'README.md')) as f:
     README = f.read()
-  with open(os.path.join(here, '../CHANGES.md')) as f:
+  with open(os.path.join(here, 'CHANGELOG.md')) as f:
     CHANGES = f.read()
 except:
   README = ''
@@ -36,8 +32,10 @@ setup(name='kayvee',
       author_email='tech-notify@getclever.com',
       url='https://github.com/Clever/kayvee-python/',
       long_description=README + '\n\n' + CHANGES,
+      long_description_content_type='text/markdown',
       packages=find_packages(exclude=['*.tests']),
       install_requires=[str(ir.requirement) for ir in install_reqs],
       setup_requires=['nose>=1.0'],
       test_suite='test',
+      python_requires='>=3.9.12',
       )

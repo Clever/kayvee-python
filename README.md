@@ -50,8 +50,8 @@ When you merge changes for a new version:
 - bump the `VERSION`
 - update `CHANGELOG.md` explaining the changes
 - after merging, run `publish.sh`
+    - requires you to install twine and wheel via `pip install <package>`
     - creates a git tag associating the version with the commit
-    - publishes the versioned package to pypi (Python package store;
-        this requires that you have the correct permissions to publish)
+    - publishes the versioned package to pypi (Python package store)
 
 If you have any issues, please work with `#oncall-infra`.
