@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from builtins import str
 import os
 import sys
 from setuptools import setup, find_packages
@@ -24,9 +25,7 @@ reqs = './requirements.txt'
 if len(sys.argv) > 1 and sys.argv[1] in ['develop', 'test']:
   reqs = './requirements-dev.txt'
 
-pr_kwargs = {}
-if pkg_resources.get_distribution("pip").version >= '6.0':
-  pr_kwargs = {"session": False}
+pr_kwargs = {"session": False}
 
 install_reqs = parse_requirements(os.path.join(here, reqs), **pr_kwargs)
 
@@ -38,7 +37,7 @@ setup(name='kayvee',
       url='https://github.com/Clever/kayvee-python/',
       long_description=README + '\n\n' + CHANGES,
       packages=find_packages(exclude=['*.tests']),
-      install_requires=[str(ir.req) for ir in install_reqs],
+      install_requires=[str(ir.requirement) for ir in install_reqs],
       setup_requires=['nose>=1.0'],
       test_suite='test',
       )

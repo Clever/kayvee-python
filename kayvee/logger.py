@@ -1,7 +1,9 @@
 from __future__ import print_function
+from __future__ import absolute_import
+from builtins import object
 import os
 import sys
-import kayvee as kv
+from . import kayvee as kv
 
 LOG_LEVELS = {
   "Debug":    "debug",
@@ -20,14 +22,14 @@ LOG_LEVEL_ENUM = {
 }
 
 # This is a port from kayvee-go/logger/logger.go
-class Logger:
+class Logger(object):
   def __init__(self, source, log_level=None, formatter=kv.format, output=sys.stderr, default_fields=None):
     if not log_level:
       log_level = os.environ.get('KAYVEE_LOG_LEVEL')
     self.log_level = self._validateLogLevel(log_level)
     self.default_fields = {}
     if default_fields is not None:
-        for key, value in default_fields.iteritems():
+        for key, value in default_fields.items():
             self.default_fields[key] = default_fields[key]
     self.default_fields["source"] = source
     self.formatter = formatter
@@ -43,7 +45,7 @@ class Logger:
     if not log_level:
       return LOG_LEVELS["Debug"]
     else:
-      for key, value in LOG_LEVELS.iteritems():
+      for key, value in LOG_LEVELS.items():
         if log_level.lower() == value:
           return value
     return LOG_LEVELS["Debug"]
@@ -100,7 +102,7 @@ class Logger:
     if LOG_LEVEL_ENUM[log_level] < LOG_LEVEL_ENUM[self.log_level]:
       return
     data["level"] = log_level
-    for key,value in self.default_fields.iteritems():
+    for key,value in self.default_fields.items():
       if key in data:
         continue
       data[key] = value

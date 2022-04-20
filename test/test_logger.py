@@ -1,9 +1,11 @@
+from future import standard_library
+standard_library.install_aliases()
 import unittest
 import kayvee as kv
 import kayvee.logger as logger
 import json
 import os
-import StringIO
+import io
 
 class TestLogger(unittest.TestCase):
 
@@ -20,22 +22,22 @@ class TestLogger(unittest.TestCase):
     self.assertNotEqual(actual, expected)
 
   def test_logger_contruct(self):
-    formatter = lambda data: ".".join(data.values())
-    outputIO = StringIO.StringIO()
+    formatter = lambda data: ".".join(list(data.values()))
+    outputIO = io.StringIO()
     logObj = logger.Logger("logger-constructor", logger.LOG_LEVELS["Info"], formatter, outputIO, dict(default_field="someval"))
     logObj.debug("testlogdebug")
     expected = ""
     self.assertEqual(outputIO.getvalue(), expected)
 
     logObj.info("testloginfo")
-    expected = "logger-constructor.info.someval.testloginfo\n"
+    expected = "testloginfo.info.someval.logger-constructor\n"
     self.assertEqual(outputIO.getvalue(), expected)
     outputIO.close()
 
   def test_validateLogLevel(self):
     # Explicit validation checks
     logObj = logger.Logger("logger-validateLogLevel")
-    outputIO = StringIO.StringIO()
+    outputIO = io.StringIO()
     logObj.setOutput(outputIO)
 
     # Test case-insensitive in log level name
@@ -59,7 +61,7 @@ class TestLogger(unittest.TestCase):
   def test_invalidLog(self):
     # Invalid log levels will default to debug
     logObj = logger.Logger("logger-invalidLog")
-    outputIO = StringIO.StringIO()
+    outputIO = io.StringIO()
     logObj.setOutput(outputIO)
 
     logObj.setLogLevel("invalidlog_level")
@@ -69,7 +71,7 @@ class TestLogger(unittest.TestCase):
     outputIO.close()
 
     # Recreate to clear
-    outputIO = StringIO.StringIO("")
+    outputIO = io.StringIO("")
     logObj.setOutput(outputIO)
     logObj.setLogLevel("sometest")
     logObj.info("info-invalidlog")
@@ -90,7 +92,7 @@ class TestLogger(unittest.TestCase):
     }
 
     for log_level in tests:
-        outputIO = StringIO.StringIO()
+        outputIO = io.StringIO()
         logObj.setOutput(outputIO)
 
         simpleLogFunc = tests[log_level][0]
@@ -100,7 +102,7 @@ class TestLogger(unittest.TestCase):
 
         outputIO.close()
 
-        outputIO = StringIO.StringIO()
+        outputIO = io.StringIO()
         logObj.setOutput(outputIO)
 
         addlDataLogFunc = tests[log_level][1]
@@ -112,7 +114,7 @@ class TestLogger(unittest.TestCase):
 
   def test_counter(self):
     logObj = logger.Logger("logger-counter")
-    outputIO = StringIO.StringIO()
+    outputIO = io.StringIO()
     logObj.setOutput(outputIO)
 
     logObj.counter("testlogcounter")
@@ -120,7 +122,7 @@ class TestLogger(unittest.TestCase):
     self.assertEqualJson(outputIO.getvalue(), expected)
     outputIO.close()
 
-    outputIO = StringIO.StringIO()
+    outputIO = io.StringIO()
     logObj.setOutput(outputIO)
     logObj.counter("testlogcounter", 2, {"key1":"val1","key2":"val2"})
     expected = "{\"source\": \"logger-counter\", \"level\": \"" + logger.LOG_LEVELS["Info"] + "\", \"title\": \"testlogcounter\",\"type\": \"counter\", \"value\": 2,\"key1\": \"val1\", \"key2\": \"val2\"}"
@@ -129,7 +131,7 @@ class TestLogger(unittest.TestCase):
 
   def test_gauge(self):
     logObj = logger.Logger("logger-gauge")
-    outputIO = StringIO.StringIO()
+    outputIO = io.StringIO()
     logObj.setOutput(outputIO)
 
     logObj.gauge("testloggauge", 0)
@@ -137,7 +139,7 @@ class TestLogger(unittest.TestCase):
     self.assertEqualJson(outputIO.getvalue(), expected)
     outputIO.close()
 
-    outputIO = StringIO.StringIO()
+    outputIO = io.StringIO()
     logObj.setOutput(outputIO)
     logObj.gauge("testloggauge", 4, {"key1":"val1","key2":"val2"})
     expected = "{\"source\": \"logger-gauge\", \"level\": \"" + logger.LOG_LEVELS["Info"] + "\", \"title\": \"testloggauge\", \"type\": \"gauge\", \"value\": 4, \"key1\": \"val1\", \"key2\": \"val2\"}"
@@ -146,13 +148,13 @@ class TestLogger(unittest.TestCase):
 
   def test_diffOutput(self):
     logObj = logger.Logger("logger-diffOutput")
-    outputIO = StringIO.StringIO()
+    outputIO = io.StringIO()
     logObj.setOutput(outputIO)
 
     logObj.info("info-diffOutput")
     output1 = outputIO.getvalue()
 
-    outputIO2 = StringIO.StringIO()
+    outputIO2 = io.StringIO()
     logObj.setOutput(outputIO2)
     logObj.warn("warn-diffOutput")
     output2 = outputIO2.getvalue()
@@ -164,7 +166,7 @@ class TestLogger(unittest.TestCase):
 
   def test_hiddenLogWarning(self):
     logObj = logger.Logger("logger-hiddenLogWarning")
-    outputIO = StringIO.StringIO()
+    outputIO = io.StringIO()
     logObj.setOutput(outputIO)
     logObj.setLogLevel(logger.LOG_LEVELS["Warning"])
 
@@ -186,7 +188,7 @@ class TestLogger(unittest.TestCase):
 
   def test_hiddenLogCritical(self):
     logObj = logger.Logger("logger-hiddenLogCritical")
-    outputIO = StringIO.StringIO()
+    outputIO = io.StringIO()
     logObj.setOutput(outputIO)
     logObj.setLogLevel(logger.LOG_LEVELS["Critical"])
 
@@ -208,7 +210,7 @@ class TestLogger(unittest.TestCase):
 
   def test_diffFormat(self):
     logObj = logger.Logger("logger-diffFormat")
-    outputIO = StringIO.StringIO()
+    outputIO = io.StringIO()
     logObj.setOutput(outputIO)
     logObj.setFormatter(lambda data: "\"This is a test\"")
     logObj.warn("testlogwarning")
@@ -217,7 +219,7 @@ class TestLogger(unittest.TestCase):
 
   def test_multipleLoggers(self):
     logObj = logger.Logger("logger-multipleLoggers-1")
-    outputIO = StringIO.StringIO()
+    outputIO = io.StringIO()
     logObj.setOutput(outputIO)
 
     # Same buffer
@@ -231,12 +233,12 @@ class TestLogger(unittest.TestCase):
     outputIO.close()
 
     # Recreate to clear
-    outputIO = StringIO.StringIO()
+    outputIO = io.StringIO()
     logObj.setOutput(outputIO)
     logObj.warn("testlogwarning")
 
     # Different buffer
-    outputIO2 = StringIO.StringIO()
+    outputIO2 = io.StringIO()
     logObj2.setOutput(outputIO2)
     logObj2.info("testloginfo")
 
